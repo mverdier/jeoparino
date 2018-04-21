@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Jeoparino</title>
+  </head>
+  <body>
+    <ul id="log"></ul>
+
+    <form action="">
+      <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg"></button>
+    </form>
+  
+
+
+
+
+
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        var socket = io();
+        $('form').submit(function(){
+          socket.emit('buzzer', ["user1", Date.now()]);
+          return false;
+        });
+        socket.on('jebaited', function(msg){
+          $('#log').append($('<li>').text(msg));
+        });
+      });
+    </script>
+  </body>
+</html>
