@@ -23,6 +23,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(4000, function(){
-  console.log('Jeoparino is running, listening on *:4000');
+http.listen(80, function(){
+  console.log('Jeoparino is running, listening on *:80');
 });
