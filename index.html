@@ -6,10 +6,10 @@
   <body>
     <form action="">
       <input type="text" id="name" name="username">
-      <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg"></button>
+      <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg" style="display:none" class="logged"></button>
     </form>
   
-    <ul id="log"></ul>
+    <ul id="log" style="display:none" class="logged"></ul>
 
 
 
@@ -27,8 +27,15 @@
           socket.emit('buzzer', [$("#name").val(), Date.now()]);
           return false;
         });
+
         socket.on('buzzer', function(msg){
           $('#log').append($('<li>').text(msg));
+        });
+
+        socket.on('joined', function(msg){
+          $('#log').append($('<li>').text(msg + ' joined the game'));
+          $('#name').remove();
+          $('.logged').show();
         });
       });
     </script>
