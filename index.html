@@ -26,7 +26,7 @@
           socket.emit('buzzer', ["user1", Date.now()]);
           return false;
         });
-        socket.on('jebaited', function(msg){
+        socket.on('buzzer', function(msg){
           $('#log').append($('<li>').text(msg));
         });
       });
