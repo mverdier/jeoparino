@@ -31,7 +31,7 @@
 
         //Click on the buzzer
         $('#buzzer').submit(function(){
-          socket.emit('buzzer', [$("#name").val(), Date.now()]);
+          socket.emit('buzzer', [name, Date.now()]);
           return false;
         });
 
