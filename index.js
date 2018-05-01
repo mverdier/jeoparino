@@ -41,10 +41,10 @@ io.on('connection', function(socket){
   	console.log(msg + ' left the user list');
   	io.emit('quit', msg);
 
- 	var index = array.indexOf(msg);
+ 	var index = users.indexOf(msg);
 
  	if (index > -1) {
- 		array.splice(index, 1);
+ 		users.splice(index, 1);
  	}
 
   	io.emit('users', users);
