@@ -76,7 +76,10 @@
 
         socket.on('users', function(msg){
           $('#users-list').empty();
-          $('#users-list').append($('<li>').text(element));
+
+          msg.forEach(function(element) {
+            $('#users-list').append($('<li>').text(element));
+          })
         });
 
         socket.on('quit', function(msg){
