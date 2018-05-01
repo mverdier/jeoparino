@@ -32,7 +32,7 @@ io.on('connection', function(socket){
   	console.log(msg + ' joined the user list');
   	io.emit('joined', msg);
 
-  	users.push(msg);
+  	users.push(msg[0]);
 
   	io.emit('users', users);
   })
