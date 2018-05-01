@@ -27,6 +27,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(3003, "163.172.50.118", function(){
+http.listen(3003, "127.0.0.1", function(){
   console.log('Jeoparino is running, listening on *:3003');
 });
