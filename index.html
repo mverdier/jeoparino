@@ -37,7 +37,15 @@
 
         //Receiveing information from the buzzer
         socket.on('buzzer', function(msg){
-          $('#log').append($('<li>').text(msg[0] + ' pressed the buzzer at '));
+
+        var date = "" + msg[1].getFullYear() + "/" +
+          (msg[1].getMonth() + 1) + "/" +
+          msg[1].getDate() + " " +
+          msg[1].getHours() + ":" +
+          msg[1].getMinutes() + ":" +
+          msg[1].getSeconds();
+
+          $('#log').append($('<li>').text(msg[0] + ' pressed the buzzer at ' + date));
         });
 
         $('#login').submit(function(){
