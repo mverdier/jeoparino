@@ -4,9 +4,13 @@
     <title>Jeoparino</title>
   </head>
   <body>
-    <form action="">
+    <form action="" id="login">
       <input type="text" id="name" name="username">
-      <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg" style="display:none" class="logged"></button>
+      <button>Login</button>
+    </form>
+
+    <form action="" id="buzzer" style="display:none" class="logged">
+      <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg"></button>
     </form>
   
     <ul id="log" style="display:none" class="logged"></ul>
@@ -21,21 +25,32 @@
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
       $(function () {
-        $("#name").val("unnamedUser" + Math.floor(Math.random() * 100));
+        var name = "unnamedUser" + Math.floor(Math.random() * 100);
+        $("#name").val(name);
         var socket = io();
-        $('form').submit(function(){
+
+        //Click on the buzzer
+        $('#buzzer').submit(function(){
           socket.emit('buzzer', [$("#name").val(), Date.now()]);
           return false;
         });
 
+        //Receiveing information from the buzzer
         socket.on('buzzer', function(msg){
-          $('#log').append($('<li>').text(msg));
+          $('#log').append($('<li>').text(msg[0] + ' pressed the buzzer at '));
+        });
+
+        $('#login').submit(function(){
+          socket.emit('join', [$("#name").val(), Date.now()]);
+          name = $("#name").val();
+
+          $('#login').remove();
+          $('.logged').show();
+          return false;
         });
 
         socket.on('joined', function(msg){
           $('#log').append($('<li>').text(msg + ' joined the game'));
-          $('#name').remove();
-          $('.logged').show();
         });
       });
     </script>
