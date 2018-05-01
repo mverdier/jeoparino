@@ -9,10 +9,17 @@
       <button>Login</button>
     </form>
 
+    <h3 id="users-title" style="display:none" class="logged">Online users</h3>
+    <ul id="users-list" style="display:none" class="logged"></ul>
+
     <form action="" id="buzzer" style="display:none" class="logged">
       <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg"></button>
     </form>
   
+    <form action="" id="logout">
+      <button>Logout</button>
+    </form>
+
     <ul id="log" style="display:none" class="logged"></ul>
 
 
@@ -53,13 +60,27 @@
           socket.emit('join', [$("#name").val(), Date.now()]);
           name = $("#name").val();
 
-          $('#login').remove();
+          $('#login').hide();
           $('.logged').show();
           return false;
         });
 
-        socket.on('joined', function(msg){
-          $('#log').append($('<li>').text(msg[0] + ' joined the game'));
+        $('#logout').submit(function(){
+          socket.emit('quit', [name, Date.now()]);
+
+          $('#login').show();
+          $('.logged').hide();
+          $('#log').empty();
+          return false;
+        });
+
+        socket.on('users', function(msg){
+          $('#users-list').empty();
+          $('#users-list').append($('<li>').text(element));
+        });
+
+        socket.on('quit', function(msg){
+          $('#log').append($('<li>').text(msg[0] + ' quit the game'));
         });
       });
     </script>

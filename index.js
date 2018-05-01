@@ -36,8 +36,28 @@ io.on('connection', function(socket){
 
   	io.emit('users', users);
   })
+
+  socket.on('quit', function(msg){
+  	console.log(msg + ' left the user list');
+  	io.emit('quit', msg);
+
+  	users.remove(msg);
+
+  	io.emit('users', users);
+  })
 });
 
 http.listen(3003, "127.0.0.1", function(){
   console.log('Jeoparino is running, listening on *:3003');
 });
+
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+};
