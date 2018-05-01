@@ -4,12 +4,12 @@
     <title>Jeoparino</title>
   </head>
   <body>
-    <ul id="log"></ul>
-
     <form action="">
+      <input type="text" id="name" name="name">
       <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg"></button>
     </form>
   
+    <ul id="log"></ul>
 
 
 
@@ -21,9 +21,10 @@
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
       $(function () {
+        $("#name").val("unnamedUser" + Math.floor(Math.random() * 100));
         var socket = io();
         $('form').submit(function(){
-          socket.emit('buzzer', ["user1", Date.now()]);
+          socket.emit('buzzer', [$("name").val(), Date.now()]);
           return false;
         });
         socket.on('buzzer', function(msg){
