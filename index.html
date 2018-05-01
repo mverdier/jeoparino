@@ -57,7 +57,7 @@
         });
 
         $('#login').submit(function(){
-          socket.emit('join', [$("#name").val(), Date.now()]);
+          socket.emit('join', [$("#name").val()]);
           name = $("#name").val();
 
           $('#login').hide();
@@ -78,7 +78,7 @@
           $('#users-list').empty();
 
           msg.forEach(function(element) {
-            $('#users-list').append($('<li>').text(element[0]));
+            $('#users-list').append($('<li>').text(element));
           })
         });
 
