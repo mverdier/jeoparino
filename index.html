@@ -5,7 +5,7 @@
   </head>
   <body>
     <form action="">
-      <input type="text" id="name" name="name">
+      <input type="text" id="name" name="username">
       <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg"></button>
     </form>
   
@@ -24,7 +24,7 @@
         $("#name").val("unnamedUser" + Math.floor(Math.random() * 100));
         var socket = io();
         $('form').submit(function(){
-          socket.emit('buzzer', [$("name").val(), Date.now()]);
+          socket.emit('buzzer', [$("#name").val(), Date.now()]);
           return false;
         });
         socket.on('buzzer', function(msg){
