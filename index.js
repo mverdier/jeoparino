@@ -29,8 +29,8 @@ io.on('connection', function(socket){
   });
 
   socket.on('join', function(msg){
-  	io.emit('joined', msg);
   	console.log(msg + ' joined the user list');
+  	io.emit('joined', msg);
 
   	users.push(msg);
 
