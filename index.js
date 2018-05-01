@@ -2,6 +2,9 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+app.set( "ipaddr", "127.0.0.1" );
+app.set( "port", 8080 );
+
 app.get('/', function(req, res){
 res.sendFile(__dirname + '/index.html');
 console.log("page loaded");
@@ -24,6 +27,6 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(3003, function(){
+http.listen(3003, "127.0.0.1", function(){
   console.log('Jeoparino is running, listening on *:3003');
 });
