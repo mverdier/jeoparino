@@ -16,9 +16,15 @@
       <button><img src="http://www.quizsystems.co.uk/IndexImages/large-quiz-buzzer-button.jpg"></button>
     </form>
   
+    <form action="" id="start_timer">
+      <button id="timer_button">Start timer</button>
+    </form>
+
     <form action="" id="logout">
       <button>Logout</button>
     </form>
+
+    <h3 id="timer" style="display:none" class="logged"></h3>
 
     <ul id="log" style="display:none" class="logged"></ul>
 
@@ -74,12 +80,29 @@
           return false;
         });
 
+        $('#start_timer').submit(function(){
+          socket.emit('start_timer', [name, Date.now()]);
+          $('#timer_button').attr("disabled", true);
+          return false;
+        });
+
+
+
         socket.on('users', function(msg){
           $('#users-list').empty();
 
           msg.forEach(function(element) {
             $('#users-list').append($('<li>').text(element));
           })
+        });
+
+        socket.on('timer', function(msg){
+          $('#timer').text(msg);
+        });
+
+        socket.on('timer_end', function(msg){
+          $('#timer').text("");
+          $('#timer_button').attr("disabled", false);
         });
 
         socket.on('quit', function(msg){

@@ -6,6 +6,7 @@ app.set( "ipaddr", "127.0.0.1" );
 app.set( "port", 8080 );
 
 var users = [];
+var onGoingTimer = false;
 
 app.get('/', function(req, res){
 res.sendFile(__dirname + '/index.html');
@@ -49,7 +50,25 @@ io.on('connection', function(socket){
 
   	io.emit('users', users);
   })
+
+  socket.on('start_timer', function(msg){
+  	console.log('Timer started');
+  	io.emit('timer', 10);
+  	onGoingTimer = true;
+  })
 });
+
+function timer(nextValue) {
+	if (nextValue < 0 || !onGoingTimer) {
+		io.emit('timer_end', 'end');
+		onGoingTimer = false;
+	} else {
+		setTimeout(function() {
+	    	io.emit('timer', nextValue);
+	    	timer(nextValue - 1);
+	    }, 1000);
+	}
+}
 
 http.listen(3003, "127.0.0.1", function(){
   console.log('Jeoparino is running, listening on *:3003');
