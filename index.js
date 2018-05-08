@@ -55,6 +55,7 @@ io.on('connection', function(socket){
   	console.log('Timer started');
   	io.emit('timer', 10);
   	onGoingTimer = true;
+  	timer(9);
   })
 });
 
