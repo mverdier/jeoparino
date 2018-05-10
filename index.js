@@ -25,8 +25,12 @@ io.on('connection', function(socket){
   });
 
   socket.on('jebaited', function(msg){
-  	io.emit('jebaited', msg);
-    console.log('jebaited used by ' + msg[0] + ' at ' + + msg[1]);
+  	if (Object.keys(users)[currentPlayer] === mqg[0]) {
+    	console.log('jebaited used by ' + msg[0] + ' at ' + + msg[1]);
+    	//TODO nextPlayer();
+  	} else {
+  		io.emit('jebaited_failed', msg[0]);
+  	}
   });
 
   socket.on('buzzer', function(msg){
