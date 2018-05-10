@@ -5,8 +5,12 @@ var io = require('socket.io')(http);
 app.set( "ipaddr", "127.0.0.1" );
 app.set( "port", 8080 );
 
-var users = [];
+var users = {};
+var usersCurrentGame = {};
+var multiplier = {};
 var onGoingTimer = false;
+var currentPlayer = 0;
+var timer = 0;
 
 app.get('/', function(req, res){
 res.sendFile(__dirname + '/index.html');
@@ -15,13 +19,14 @@ console.log("page loaded");
     
 io.on('connection', function(socket){
   console.log('a user connected');
+
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
 
   socket.on('jebaited', function(msg){
   	io.emit('jebaited', msg);
-    console.log('jebaited used by ' + msg);
+    console.log('jebaited used by ' + msg[0] + ' at ' + + msg[1]);
   });
 
   socket.on('buzzer', function(msg){
@@ -33,7 +38,9 @@ io.on('connection', function(socket){
   	console.log(msg + ' joined the user list');
   	io.emit('joined', msg);
 
-  	users.push(msg);
+  	users[msg] = 0;
+  	usersCurrentGame[msg] = 0;
+  	multiplier[msg] = 1;
 
   	io.emit('users', users);
   })
@@ -53,20 +60,83 @@ io.on('connection', function(socket){
 
   socket.on('start_timer', function(msg){
   	console.log('Timer started');
-  	io.emit('timer', 10);
+  	timer = 10;
+  	io.emit('timer', timer);
   	onGoingTimer = true;
-  	timer(9);
+  	timer = 9;
+  	timer();
+  })
+
+  socket.on('end_timer', function(msg){
+  	console.log('Timer ended');
+  	io.emit('timer_end', timer);
+  	onGoingTimer = false;
+  })
+
+  socket.on('pause_timer', function(msg){
+  	console.log('Timer paused');
+  	io.emit('timer', timer);
+  	onGoingTimer = false;
+  })
+
+  socket.on('unpause_timer', function(msg){
+  	console.log('Timer unpaused');
+  	io.emit('timer', timer);
+  	onGoingTimer = true;
+  	timer = 9;
+  	timer();
+  })
+
+  socket.on('award', function(msg){
+  	console.log("Awarding " + msg[1] + " points to " + msg[0]);
+
+  	usersCurrentGame[msg[0]] += (msg[1] * multiplier[msg[0]]);
+
+  	io.emit('users', usersCurrentGame);
+  })
+
+  socket.on('remove', function(msg){
+  	console.log("Removing " + msg[1] + " points from " + msg[0]);
+
+  	usersCurrentGame[msg[0]] -= msg[1];
+
+  	io.emit('users', usersCurrentGame);
+  })
+
+  socket.on('end_mini_game', function(msg){
+  	console.log("Ending minigame, adding points");
+
+  	for (var i in Object.keys(users)) {
+  		users[i] += usersCurrentGame[i];
+  	}
+
+  	io.emit('users', users);
+  })
+
+  socket.on('start_game', function(msg){
+  	console.log("Starting game, locking new players out. GM is " + msg);
+
+  	delete users[msg];
+  	delete usersCurrentGame[msg];
+  	delete multiplier[msg];
+
+  	currentPlayer = 0;
+
+  	io.emit('current_player', Object.keys(users)[currentPlayer]);
+  	io.emit('started', msg);
+  	io.emit('users', users);
   })
 });
 
-function timer(nextValue) {
-	if (nextValue < 0 || !onGoingTimer) {
-		io.emit('timer_end', 'end');
+function timer() {
+	if (timer < 0) {
+		io.emit('timer_end', 0);
 		onGoingTimer = false;
 	} else {
 		setTimeout(function() {
-	    	io.emit('timer', nextValue);
-	    	timer(nextValue - 1);
+	    	io.emit('timer', timer);
+	    	timer = timer - 1;
+	    	timer();
 	    }, 1000);
 	}
 }
